@@ -504,13 +504,19 @@
       return article.date ? new Date(article.date).getTime() : 0;
     }
 
-    function updateBreakingNews() {
-      if (articles.length > 0) {
-        const banner = document.getElementById('breakingBanner');
-        document.getElementById('breakingText').innerText = articles[0].title;
-        banner.classList.remove('hidden');
-      }
-    }
+  function updateBreakingNews() {
+  const banner = document.getElementById('breakingBanner');
+  // Zoek naar het eerste artikel dat expliciet op 'isBreaking' staat
+  const breakingArticle = articles.find(a => a.isBreaking === true);
+
+  if (breakingArticle) {
+    document.getElementById('breakingText').innerText = breakingArticle.title;
+    banner.classList.remove('hidden');
+  } else {
+    // Geen breaking nieuws? Verberg de rode balk!
+    banner.classList.add('hidden');
+  }
+}
 
     // ROUTING & RENDERING
     function render() {
