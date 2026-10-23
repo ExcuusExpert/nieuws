@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="nl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beheerpaneel — Excuusexpert Nieuws</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root[data-theme="dark"] {
+      --bg: #0b0f19;
+      --surface: #111827;
+      --surface-hover: #1f2937;
+      --border: #374151;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --danger: #ef4444;
+      --success: #10b981;
+      --accent: #f59e0b;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    :root[data-theme="light"] {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-hover: #f1f5f9;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --danger: #dc2626;
+      --success: #059669;
+      --accent: #d97706;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 16px 24px;
+    }
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand { font-weight: 800; font-size: 1.2rem; color: var(--text); text-decoration: none; }
+    
+    /* BUTTONS */
+    .btn {
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-success { background: var(--success); color: white; }
+    .btn-secondary { background: var(--surface-hover); color: var(--text); border-color: var(--border); }
+    .btn-secondary:hover { border-color: var(--primary); }
+
+    .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+    .hidden { display: none !important; }
+
+    /* LOGIN BOX */
+    .login-wrapper {
+      max-width: 420px;
+      margin: 80px auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 35px;
+      box-shadow: var(--shadow);
+    }
+    .login-wrapper h2 { margin-bottom: 10px; font-size: 1.6rem; }
+    .login-wrapper p { color: var(--text-muted); margin-bottom: 25px; font-size: 0.9rem; }
+
+    /* FORMS & INPUTS */
+    label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; }
+    input[type="text"], input[type="password"], select, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      margin-bottom: 18px;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+    textarea { height: 140px; resize: vertical; }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg);
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+    .checkbox-group input { width: 18px; height: 18px; cursor: pointer; }
+
+    /* LAYOUT GRID */
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 30px;
+    }
+    @media (max-width: 900px) { .admin-grid { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      margin-bottom: 25px;
+    }
+    .card h3 { margin-bottom: 20px; font-size: 1.25rem; }
+
+    /* UPLOAD & IMAGE PREVIEW */
+    .file-dropzone {
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      background: var(--bg);
+      cursor: pointer;
+      margin-bottom: 15px;
+    }
+    .img-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .img-preview-item {
+      position: relative;
+      height: 80px;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .img-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+    .img-delete-btn {
+      position: absolute;
+      top: 4px; right: 4px;
+      background: rgba(239, 68, 68, 0.9);
+      color: white; border: none;
+      border-radius: 50%; width: 22px; height: 22px;
+      cursor: pointer; font-weight: bold; font-size: 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ARTICLES LIST */
+    .article-list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .article-list-item:last-child { border-bottom: none; }
+    .badge-breaking {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--danger);
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-left: 6px;
+    }
+
+    .alert-banner {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" target="_blank" class="brand">⚙️ Excuusexpert Beheer</a>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn btn-secondary" onclick="toggleTheme()">🌓 Thema</button>
+        <button id="logoutBtn" class="btn btn-danger hidden" onclick="logout()">Uitloggen</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    
+    <!-- LOGIN FORM -->
+    <div id="loginSection" class="login-wrapper">
+      <h2>Inloggen Beheer</h2>
+      <p>Voer het wachtwoord in om nieuws te beheren.</p>
+      <form onsubmit="handleLogin(event)">
+        <label>Wachtwoord:</label>
+        <input type="password" id="passInput" required placeholder="wachtwoord is 32482978751">
+        <p id="loginError" style="color: var(--danger); font-size: 0.85rem; display: none; margin-bottom: 15px;">Onjuist wachtwoord!</p>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Inloggen</button>
+      </form>
+    </div>
+
+    <!-- MAIN ADMIN PANEL -->
+    <div id="adminPanel" class="hidden">
+      
+      <div class="alert-banner">
+        💡 <strong>Workflow:</strong> Maak of bewerk je berichten -> Klik op <strong>"📥 Download news.json"</strong> -> Upload het bestand naar je GitHub repository om het live te zetten.
+      </div>
+
+      <div class="admin-grid">
+        
+        <!-- FORMULIER VOOR TOEVOEGEN/BEWERKEN -->
+        <div>
+          <div class="card">
+            <h3 id="formTitle">Nieuw Bericht Aanmaken</h3>
+            <form id="articleForm" onsubmit="saveArticle(event)">
+              <input type="hidden" id="articleId">
+
+              <label>Titel van het bericht:</label>
+              <input type="text" id="title" required placeholder="Bijv. Belangrijke update over de werkzaamheden...">
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div>
+                  <label>Categorie:</label>
+                  <select id="category">
+                    <option value="Algemeen">Algemeen</option>
+                    <option value="Belangrijk">Belangrijk</option>
+                    <option value="Updates">Updates</option>
+                    <option value="Aankondiging">Aankondiging</option>
+                  </select>
+                </div>
+                <div>
+                  <label>Datum:</label>
+                  <input type="date" id="date" required>
+                </div>
+              </div>
+
+              <label class="checkbox-group">
+                <input type="checkbox" id="isBreaking">
+                <span>🔥 Markeer als <strong>Breaking News</strong> (Bovenaan op de site)</span>
+              </label>
+
+              <label>Inhoud / Berichttekst:</label>
+              <textarea id="content" required placeholder="Schrijf hier het volledige bericht..."></textarea>
+
+              <label>Foto's toevoegen:</label>
+              <div class="file-dropzone" onclick="document.getElementById('imageInput').click()">
+                <span>📸 Klik hier om afbeeldingen te selecteren</span>
+                <input type="file" id="imageInput" accept="image/*" multiple style="display: none;" onchange="handleImages(event)">
+              </div>
+
+              <div id="imagePreviewContainer" class="img-preview-grid"></div>
+
+              <div style="display: flex; gap: 10px; margin-top: 25px;">
+                <button type="submit" class="btn btn-primary" style="flex: 1;">Opslaan in Browser</button>
+                <button type="button" class="btn btn-secondary hidden" id="cancelBtn" onclick="resetForm()">Annuleren</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- RECHTER ZIJBALL: EXPORT & BERICHTENLIJST -->
+        <div>
+          <!-- EXPORT & IMPORT -->
+          <div class="card">
+            <h3>Publiceren naar GitHub</h3>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom: 15px;">Exporteer alle opgeslagen berichten naar een `news.json` bestand.</p>
+            <button onclick="downloadJSON()" class="btn btn-success" style="width: 100%; justify-content: center;">📥 Download news.json</button>
+            
+            <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
+            
+            <label style="font-size: 0.85rem;">Bestaande news.json importeren:</label>
+            <input type="file" accept=".json" onchange="importJSON(event)" style="font-size: 0.8rem; margin-bottom: 0;">
+          </div>
+
+          <!-- BERICHTEN OVERZICHT -->
+          <div class="card">
+            <h3>Bestaande Berichten (<span id="articleCount">0</span>)</h3>
+            <input type="text" id="filterInput" placeholder="Zoek in overzicht..." oninput="renderList()" style="padding: 8px 12px; font-size: 0.85rem;">
+            <div id="articlesList" style="max-height: 400px; overflow-y: auto;"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const _p = "aGVzc2VsaXNkZWJhYXMx"; // Base64 hesselisdebaas1
+    let articles = [];
+    let currentBase64Images = [];
+
+    // THEMA
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    }
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+
+    // AUTH
+    function handleLogin(e) {
+      e.preventDefault();
+      if (btoa(document.getElementById('passInput').value) === _p) {
+        sessionStorage.setItem('admin_logged', 'true');
+        showPanel();
+      } else {
+        document.getElementById('loginError').style.display = 'block';
+      }
+    }
+
+    function checkAuth() {
+      if (sessionStorage.getItem('admin_logged') === 'true') showPanel();
+    }
+
+    function logout() {
+      sessionStorage.removeItem('admin_logged');
+      location.reload();
+    }
+
+    function showPanel() {
+      document.getElementById('loginSection').classList.add('hidden');
+      document.getElementById('adminPanel').classList.remove('hidden');
+      document.getElementById('logoutBtn').classList.remove('hidden');
+      loadArticles();
+    }
+
+    // DATA MANAGING
+    async function loadArticles() {
+      const stored = localStorage.getItem('news_data');
+      if (stored) {
+        articles = JSON.parse(stored);
+      } else {
+        try {
+          const res = await fetch('news.json');
+          if (res.ok) {
+            articles = await res.json();
+            saveLocal();
+          }
+        } catch (e) { articles = []; }
+      }
+      renderList();
+      resetForm();
+    }
+
+    function saveLocal() {
+      localStorage.setItem('news_data', JSON.stringify(articles));
+    }
+
+    function renderList() {
+      const query = document.getElementById('filterInput')?.value.toLowerCase() || '';
+      const list = document.getElementById('articlesList');
+      
+      let filtered = articles.filter(a => a.title.toLowerCase().includes(query));
+      filtered.sort((a, b) => b.id - a.id);
+
+      document.getElementById('articleCount').innerText = articles.length;
+
+      if (filtered.length === 0) {
+        list.innerHTML = '<p style="color:var(--text-muted); font-size:0.85rem; padding: 10px 0;">Geen berichten gevonden.</p>';
+        return;
+      }
+
+      list.innerHTML = filtered.map(item => `
+        <div class="article-list-item">
+          <div>
+            <strong>${escapeHtml(item.title)}</strong> 
+            ${item.isBreaking ? '<span class="badge-breaking">Breaking</span>' : ''}
+            <br>
+            <span style="font-size:0.75rem; color:var(--text-muted);">${item.date || ''} • ${item.category || 'Algemeen'}</span>
+          </div>
+          <div style="display:flex; gap:6px;">
+            <button onclick="editArticle('${item.id}')" class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;">✏️</button>
+            <button onclick="deleteArticle('${item.id}')" class="btn btn-danger" style="padding:4px 8px; font-size:0.75rem;">🗑️</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // IMAGES PREVIEW
+    function handleImages(e) {
+      const files = e.target.files;
+      if (!files.length) return;
+
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          currentBase64Images.push(evt.target.result);
+          renderImagePreviews();
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function removeImage(index) {
+      currentBase64Images.splice(index, 1);
+      renderImagePreviews();
+    }
+
+    function renderImagePreviews() {
+      const container = document.getElementById('imagePreviewContainer');
+      container.innerHTML = currentBase64Images.map((img, idx) => `
+        <div class="img-preview-item">
+          <img src="${img}">
+          <button type="button" class="img-delete-btn" onclick="removeImage(${idx})">&times;</button>
+        </div>
+      `).join('');
+    }
+
+    // SAVE & EDIT
+    function saveArticle(e) {
+      e.preventDefault();
+
+      const id = document.getElementById('articleId').value;
+      const title = document.getElementById('title').value;
+      const category = document.getElementById('category').value;
+      const date = document.getElementById('date').value;
+      const isBreaking = document.getElementById('isBreaking').checked;
+      const content = document.getElementById('content').value;
+
+      if (id) {
+        const idx = articles.findIndex(a => a.id.toString() === id.toString());
+        if (idx !== -1) {
+          articles[idx] = { ...articles[idx], title, category, date, isBreaking, content, images: currentBase64Images };
+        }
+      } else {
+        const newArt = {
+          id: Date.now().toString(),
+          title, category, date, isBreaking, content, images: currentBase64Images
+        };
+        articles.push(newArt);
+      }
+
+      saveLocal();
+      renderList();
+      resetForm();
+      alert('Bericht opgeslagen in de browser! Download news.json om het online te publiceren.');
+    }
+
+    function editArticle(id) {
+      const art = articles.find(a => a.id.toString() === id.toString());
+      if (!art) return;
+
+      document.getElementById('articleId').value = art.id;
+      document.getElementById('title').value = art.title;
+      document.getElementById('category').value = art.category || 'Algemeen';
+      document.getElementById('date').value = art.date || '';
+      document.getElementById('isBreaking').checked = !!art.isBreaking;
+      document.getElementById('content').value = art.content;
+
+      currentBase64Images = art.images || [];
+      renderImagePreviews();
+
+      document.getElementById('formTitle').innerText = 'Bericht Bewerken';
+      document.getElementById('cancelBtn').classList.remove('hidden');
+      window.scrollTo(0, 0);
+    }
+
+    function deleteArticle(id) {
+      if (confirm('Weet je zeker dat je dit bericht wilt verwijderen?')) {
+        articles = articles.filter(a => a.id.toString() !== id.toString());
+        saveLocal();
+        renderList();
+      }
+    }
+
+    function resetForm() {
+      document.getElementById('articleId').value = '';
+      document.getElementById('articleForm').reset();
+      document.getElementById('date').valueAsDate = new Date();
+      currentBase64Images = [];
+      renderImagePreviews();
+      document.getElementById('formTitle').innerText = 'Nieuw Bericht Aanmaken';
+      document.getElementById('cancelBtn').classList.add('hidden');
+    }
+
+    // EXPORT & IMPORT
+    function downloadJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(articles, null, 2));
+      const dlAnchor = document.createElement('a');
+      dlAnchor.setAttribute("href", dataStr);
+      dlAnchor.setAttribute("download", "news.json");
+      document.body.appendChild(dlAnchor);
+      dlAnchor.click();
+      dlAnchor.remove();
+    }
+
+    function importJSON(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          articles = JSON.parse(evt.target.result);
+          saveLocal();
+          renderList();
+          alert('Berichten succesvol geïmporteerd!');
+        } catch (err) {
+          alert('Ongeldig JSON bestand!');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    checkAuth();
+    document.getElementById('date').valueAsDate = new Date();
+  </script>
+</body>
+</html>
